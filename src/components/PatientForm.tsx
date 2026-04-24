@@ -13,12 +13,26 @@ export default function PatientForm({
   initialData,
 }: Props) {
   const emptyForm: Omit<Patient, "id"> = {
-    name: "",
+    nombre: "",
     dni: "",
-    oc: false,
-    far: false,
+    orden_compra: 0,
+    es_lejos: 0,
+
+    estado: "activo",
+    motivo_baja: null,
+    fecha_baja: null,
+
+    prescripcion_inicio: "",
+    prescripcion_vencimiento: "",
+
     bolsas_abiertas: 0,
     bolsas_cerradas: 0,
+    colo_convexas: 0,
+    ileo_convexas: 0,
+    crema: 0,
+    polvo_cicatrizante: 0,
+    bolsas_urostomia: 0,
+    cateter_uretral: 0,
   };
 
   const [form, setForm] = useState(emptyForm);
@@ -56,8 +70,8 @@ export default function PatientForm({
         <label style={label}>Nombre</label>
         <input
           style={input}
-          value={form.name}
-          onChange={(e) => handleChange("name", e.target.value)}
+          value={form.nombre}
+          onChange={(e) => handleChange("nombre", e.target.value)}
         />
       </div>
 
@@ -76,20 +90,49 @@ export default function PatientForm({
         <label style={checkboxLabel}>
           <input
             type="checkbox"
-            checked={form.oc}
-            onChange={(e) => handleChange("oc", e.target.checked)}
+            checked={form.orden_compra === 1}
+            onChange={(e) =>
+              handleChange("orden_compra", e.target.checked ? 1 : 0)
+            }
           />
-          Orden de Compra (OC)
+          Orden de Compra
         </label>
 
         <label style={checkboxLabel}>
           <input
             type="checkbox"
-            checked={form.far}
-            onChange={(e) => handleChange("far", e.target.checked)}
+            checked={form.es_lejos === 1}
+            onChange={(e) => handleChange("es_lejos", e.target.checked ? 1 : 0)}
           />
           FAR
         </label>
+      </div>
+
+      {/* Fechas */}
+      <div style={row}>
+        <div style={field}>
+          <label style={label}>Inicio prescripción</label>
+          <input
+            style={input}
+            type="date"
+            value={form.prescripcion_inicio}
+            onChange={(e) =>
+              handleChange("prescripcion_inicio", e.target.value)
+            }
+          />
+        </div>
+
+        <div style={field}>
+          <label style={label}>Vencimiento</label>
+          <input
+            style={input}
+            type="date"
+            value={form.prescripcion_vencimiento}
+            onChange={(e) =>
+              handleChange("prescripcion_vencimiento", e.target.value)
+            }
+          />
+        </div>
       </div>
 
       {/* Bolsas */}

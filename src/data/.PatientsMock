@@ -1,4 +1,4 @@
-import { Patient } from "../types/Patient";
+/* import { Patient } from "../types/Patient";
 
 export const patientsMock: Patient[] = [
   {
@@ -48,7 +48,7 @@ export const patientsMock: Patient[] = [
     bolsas_cerradas: 0,
   },
   {
-    id: 6,
+    id: ,
     name: "Alan",
     dni: "39914382",
     oc: true,
@@ -65,3 +65,4 @@ export const defaultPatient: Omit<Patient, "id"> = {
   bolsas_abiertas: 0,
   bolsas_cerradas: 0,
 };
+ */

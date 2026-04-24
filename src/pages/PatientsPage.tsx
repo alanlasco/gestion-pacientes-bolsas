@@ -1,56 +1,128 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Patient } from "../types/Patient";
-import { patientsMock } from "../data/PatientsMock";
 import PatientTable from "../components/PatientTable";
 import PatientForm from "../components/PatientForm";
 import ExportButton from "../components/ExportButton";
 
+const API_URL =
+  "https://c805e0e1-c8f7-4c62-b03a-3c8e0805a49f-00-azq9xy3uy68u.worf.replit.dev/pacientes";
+
 export default function PatientsPage() {
-  const [patients, setPatients] = useState<Patient[]>(patientsMock);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
 
   const [searchDni, setSearchDni] = useState("");
   const [showOnlyOC, setShowOnlyOC] = useState(false);
 
-  // ---------------- CRUD ----------------
+  // ---------------- FETCH ----------------
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        setPatients(data);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
 
-  const addPatient = (newPatient: Omit<Patient, "id">) => {
-    const newId = patients.length
-      ? Math.max(...patients.map((p) => p.id)) + 1
-      : 1;
+    fetchPatients();
+  }, []);
 
-    setPatients((prev) => [...prev, { ...newPatient, id: newId }]);
+  // ---------------- CREATE ----------------
+  const addPatient = async (newPatient: Omit<Patient, "id">) => {
+    try {
+      console.log("ENVIANDO:", newPatient);
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPatient),
+      });
+
+      console.log("STATUS:", res.status);
+
+      const text = await res.text();
+      console.log("RAW RESPONSE:", text);
+
+      if (!res.ok) {
+        throw new Error("Error en el POST");
+      }
+
+      const created = JSON.parse(text);
+
+      setPatients((prev) => [
+        ...prev,
+        {
+          ...newPatient,
+          id: created.id,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error creating patient:", error);
+    }
   };
+  // ---------------- DELETE ----------------
+  const deletePatient = async (id: number) => {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
 
-  const updatePatient = (updated: Patient) => {
-    setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    setEditingPatient(null);
+      setPatients((prev) => prev.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+    }
   };
+  const updatePatient = async (updated: Patient) => {
+    try {
+      const res = await fetch(`${API_URL}/${updated.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updated),
+      });
 
-  const deletePatient = (id: number) => {
-    setPatients((prev) => prev.filter((p) => p.id !== id));
+      if (!res.ok) {
+        throw new Error("Error en update");
+      }
+
+      // 🔥 merge seguro
+      setPatients((prev) =>
+        prev.map((p) =>
+          p.id === updated.id
+            ? {
+                ...p,
+                ...updated,
+              }
+            : p,
+        ),
+      );
+
+      setEditingPatient(null);
+    } catch (error) {
+      console.error("Error updating patient:", error);
+    }
   };
-
   // ---------------- FILTROS ----------------
-
   const filteredPatients = patients
     .filter((p) => (searchDni ? p.dni.includes(searchDni) : true))
-    .filter((p) => (showOnlyOC ? p.oc : true));
+    .filter((p) => (showOnlyOC ? p.orden_compra === 1 : true));
 
   // ---------------- UI ----------------
-
   return (
     <div style={{ padding: "20px" }}>
       <h1>Pacientes</h1>
 
-      {/* FORM */}
       <PatientForm
         onCreate={addPatient}
         onUpdate={updatePatient}
         initialData={editingPatient}
       />
 
-      {/* FILTROS */}
       <div style={{ margin: "20px 0", display: "flex", gap: "10px" }}>
         <input
           placeholder="Buscar por DNI"
@@ -63,12 +135,10 @@ export default function PatientsPage() {
         </button>
       </div>
 
-      {/* EXPORT */}
       <div style={{ marginBottom: "20px" }}>
         <ExportButton data={filteredPatients} filename="pacientes" />
       </div>
 
-      {/* TABLA */}
       <PatientTable
         patients={filteredPatients}
         onEdit={setEditingPatient}
