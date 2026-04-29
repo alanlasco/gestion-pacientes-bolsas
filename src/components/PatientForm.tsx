@@ -65,108 +65,205 @@ export default function PatientForm({
         {initialData ? "Editar paciente" : "Agregar paciente"}
       </h3>
 
-      {/* Nombre */}
-      <div style={field}>
-        <label style={label}>Nombre</label>
-        <input
-          style={input}
-          value={form.nombre}
-          onChange={(e) => handleChange("nombre", e.target.value)}
-        />
-      </div>
+      <div style={layout}>
+        {/* IZQUIERDA */}
+        <div style={column}>
+          {/* Nombre */}
+          <div style={field}>
+            <label style={label}>Nombre</label>
+            <input
+              style={input}
+              value={form.nombre}
+              onChange={(e) => handleChange("nombre", e.target.value)}
+            />
+          </div>
 
-      {/* DNI */}
-      <div style={field}>
-        <label style={label}>DNI</label>
-        <input
-          style={input}
-          value={form.dni}
-          onChange={(e) => handleChange("dni", e.target.value)}
-        />
-      </div>
+          {/* DNI */}
+          <div style={field}>
+            <label style={label}>DNI</label>
+            <input
+              style={input}
+              value={form.dni}
+              onChange={(e) => handleChange("dni", e.target.value)}
+            />
+          </div>
 
-      {/* OC / FAR */}
-      <div style={row}>
-        <label style={checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={form.orden_compra === 1}
-            onChange={(e) =>
-              handleChange("orden_compra", e.target.checked ? 1 : 0)
-            }
-          />
-          Orden de Compra
-        </label>
+          {/* OC / FAR */}
+          <div style={row}>
+            <label style={checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={form.orden_compra === 1}
+                onChange={(e) =>
+                  handleChange("orden_compra", e.target.checked ? 1 : 0)
+                }
+              />
+              Orden de Compra
+            </label>
 
-        <label style={checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={form.es_lejos === 1}
-            onChange={(e) => handleChange("es_lejos", e.target.checked ? 1 : 0)}
-          />
-          FAR
-        </label>
-      </div>
+            <label style={checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={form.es_lejos === 1}
+                onChange={(e) =>
+                  handleChange("es_lejos", e.target.checked ? 1 : 0)
+                }
+              />
+              FAR
+            </label>
+          </div>
 
-      {/* Fechas */}
-      <div style={row}>
-        <div style={field}>
-          <label style={label}>Inicio prescripción</label>
-          <input
-            style={input}
-            type="date"
-            value={form.prescripcion_inicio}
-            onChange={(e) =>
-              handleChange("prescripcion_inicio", e.target.value)
-            }
-          />
+          {/* Fechas */}
+          <div style={row}>
+            <div style={field}>
+              <label style={label}>Inicio prescripción</label>
+              <input
+                style={input}
+                type="date"
+                value={form.prescripcion_inicio}
+                onChange={(e) => {
+                  const inicio = e.target.value;
+
+                  let vencimiento = "";
+                  if (inicio) {
+                    const date = new Date(inicio);
+                    date.setMonth(date.getMonth() + 6);
+                    vencimiento = date.toISOString().split("T")[0];
+                  }
+
+                  setForm((prev) => ({
+                    ...prev,
+                    prescripcion_inicio: inicio,
+                    prescripcion_vencimiento: vencimiento,
+                  }));
+                }}
+              />
+            </div>
+
+            <div style={field}>
+              <label style={label}>Vencimiento</label>
+              <input
+                style={input}
+                type="date"
+                value={form.prescripcion_vencimiento}
+                disabled
+              />
+            </div>
+          </div>
         </div>
 
-        <div style={field}>
-          <label style={label}>Vencimiento</label>
-          <input
-            style={input}
-            type="date"
-            value={form.prescripcion_vencimiento}
-            onChange={(e) =>
-              handleChange("prescripcion_vencimiento", e.target.value)
-            }
-          />
+        {/* DERECHA */}
+        <div style={column}>
+          {/* Bolsas */}
+          <div style={row}>
+            <div style={field}>
+              <label style={label}>Bolsas abiertas</label>
+              <input
+                style={input}
+                type="number"
+                value={form.bolsas_abiertas}
+                onChange={(e) =>
+                  handleChange("bolsas_abiertas", Number(e.target.value))
+                }
+              />
+            </div>
+
+            <div style={field}>
+              <label style={label}>Bolsas cerradas</label>
+              <input
+                style={input}
+                type="number"
+                value={form.bolsas_cerradas}
+                onChange={(e) =>
+                  handleChange("bolsas_cerradas", Number(e.target.value))
+                }
+              />
+            </div>
+          </div>
+
+          {/* Otros insumos */}
+          <div style={row}>
+            <div style={field}>
+              <label style={label}>Colo convexas</label>
+              <input
+                style={input}
+                type="number"
+                value={form.colo_convexas}
+                onChange={(e) =>
+                  handleChange("colo_convexas", Number(e.target.value))
+                }
+              />
+            </div>
+
+            <div style={field}>
+              <label style={label}>Íleo convexas</label>
+              <input
+                style={input}
+                type="number"
+                value={form.ileo_convexas}
+                onChange={(e) =>
+                  handleChange("ileo_convexas", Number(e.target.value))
+                }
+              />
+            </div>
+          </div>
+
+          <div style={row}>
+            <div style={field}>
+              <label style={label}>Crema</label>
+              <input
+                style={input}
+                type="number"
+                value={form.crema}
+                onChange={(e) => handleChange("crema", Number(e.target.value))}
+              />
+            </div>
+
+            <div style={field}>
+              <label style={label}>Polvo cicatrizante</label>
+              <input
+                style={input}
+                type="number"
+                value={form.polvo_cicatrizante}
+                onChange={(e) =>
+                  handleChange("polvo_cicatrizante", Number(e.target.value))
+                }
+              />
+            </div>
+          </div>
+
+          <div style={row}>
+            <div style={field}>
+              <label style={label}>Bolsas urostomía</label>
+              <input
+                style={input}
+                type="number"
+                value={form.bolsas_urostomia}
+                onChange={(e) =>
+                  handleChange("bolsas_urostomia", Number(e.target.value))
+                }
+              />
+            </div>
+
+            <div style={field}>
+              <label style={label}>Catéter uretral</label>
+              <input
+                style={input}
+                type="number"
+                value={form.cateter_uretral}
+                onChange={(e) =>
+                  handleChange("cateter_uretral", Number(e.target.value))
+                }
+              />
+            </div>
+          </div>
+
+          {/* BOTÓN */}
+          <button style={button} onClick={handleSubmit}>
+            {initialData ? "Actualizar" : "Agregar"}
+          </button>
         </div>
       </div>
-
-      {/* Bolsas */}
-      <div style={row}>
-        <div style={field}>
-          <label style={label}>Bolsas abiertas</label>
-          <input
-            style={input}
-            type="number"
-            min={0}
-            value={form.bolsas_abiertas}
-            onChange={(e) =>
-              handleChange("bolsas_abiertas", Number(e.target.value))
-            }
-          />
-        </div>
-
-        <div style={field}>
-          <label style={label}>Bolsas cerradas</label>
-          <input
-            style={input}
-            type="number"
-            min={0}
-            value={form.bolsas_cerradas}
-            onChange={(e) =>
-              handleChange("bolsas_cerradas", Number(e.target.value))
-            }
-          />
-        </div>
-      </div>
-
-      <button style={button} onClick={handleSubmit}>
-        {initialData ? "Actualizar" : "Agregar"}
-      </button>
     </div>
   );
 }
@@ -177,7 +274,7 @@ const container: React.CSSProperties = {
   border: "1px solid #ddd",
   padding: "16px",
   borderRadius: "10px",
-  maxWidth: "420px",
+  maxWidth: "50rem",
   background: "#f9f9f9",
   display: "flex",
   flexDirection: "column",
@@ -229,4 +326,16 @@ const button: React.CSSProperties = {
   color: "white",
   fontWeight: 600,
   cursor: "pointer",
+};
+const layout: React.CSSProperties = {
+  display: "flex",
+  gap: "20px",
+  alignItems: "flex-start",
+};
+
+const column: React.CSSProperties = {
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
 };
