@@ -12,7 +12,14 @@ export default function PatientsPage() {
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
 
   const [searchDni, setSearchDni] = useState("");
-  const [showOnlyOC, setShowOnlyOC] = useState(false);
+
+  // 🔥 NUEVO SISTEMA DE FILTROS
+  const [filters, setFilters] = useState({
+    onlyOC: false,
+    onlyFar: false,
+    bolsasAbiertas: false,
+    bolsasCerradas: false,
+  });
 
   // ---------------- FETCH ----------------
   useEffect(() => {
@@ -64,6 +71,7 @@ export default function PatientsPage() {
       console.error("Error creating patient:", error);
     }
   };
+
   // ---------------- DELETE ----------------
   const deletePatient = async (id: number) => {
     try {
@@ -76,6 +84,8 @@ export default function PatientsPage() {
       console.error("Error deleting patient:", error);
     }
   };
+
+  // ---------------- UPDATE ----------------
   const updatePatient = async (updated: Patient) => {
     try {
       const res = await fetch(`${API_URL}/${updated.id}`, {
@@ -90,7 +100,6 @@ export default function PatientsPage() {
         throw new Error("Error en update");
       }
 
-      // 🔥 merge seguro
       setPatients((prev) =>
         prev.map((p) =>
           p.id === updated.id
@@ -107,10 +116,18 @@ export default function PatientsPage() {
       console.error("Error updating patient:", error);
     }
   };
+
   // ---------------- FILTROS ----------------
   const filteredPatients = patients
     .filter((p) => (searchDni ? p.dni.includes(searchDni) : true))
-    .filter((p) => (showOnlyOC ? p.orden_compra === 1 : true));
+
+    .filter((p) => (filters.onlyOC ? p.orden_compra === 1 : true))
+
+    .filter((p) => (filters.onlyFar ? p.es_lejos === 1 : true))
+
+    .filter((p) => (filters.bolsasAbiertas ? p.bolsas_abiertas > 0 : true))
+
+    .filter((p) => (filters.bolsasCerradas ? p.bolsas_cerradas > 0 : true));
 
   // ---------------- UI ----------------
   return (
@@ -123,22 +140,85 @@ export default function PatientsPage() {
         initialData={editingPatient}
       />
 
-      <div style={{ margin: "20px 0", display: "flex", gap: "10px" }}>
+      {/* FILTROS */}
+      <div
+        style={{
+          margin: "20px 0",
+          display: "flex",
+          gap: "20px",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
         <input
           placeholder="Buscar por DNI"
           value={searchDni}
           onChange={(e) => setSearchDni(e.target.value)}
         />
 
-        <button onClick={() => setShowOnlyOC((prev) => !prev)}>
-          {showOnlyOC ? "Mostrar Todos" : "Solo OC"}
-        </button>
+        <label>
+          <input
+            type="checkbox"
+            checked={filters.onlyOC}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                onlyOC: e.target.checked,
+              }))
+            }
+          />
+          Solo OC
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={filters.onlyFar}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                onlyFar: e.target.checked,
+              }))
+            }
+          />
+          Solo FAR
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={filters.bolsasAbiertas}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                bolsasAbiertas: e.target.checked,
+              }))
+            }
+          />
+          Bolsas abiertas
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={filters.bolsasCerradas}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                bolsasCerradas: e.target.checked,
+              }))
+            }
+          />
+          Bolsas cerradas
+        </label>
       </div>
 
+      {/* EXPORT */}
       <div style={{ marginBottom: "20px" }}>
         <ExportButton data={filteredPatients} filename="pacientes" />
       </div>
 
+      {/* TABLA */}
       <PatientTable
         patients={filteredPatients}
         onEdit={setEditingPatient}

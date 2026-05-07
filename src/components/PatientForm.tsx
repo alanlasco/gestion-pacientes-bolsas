@@ -111,6 +111,44 @@ export default function PatientForm({
               />
               FAR
             </label>
+            {/* Estado / Baja */}
+            <div style={field}>
+              <label style={label}>Estado del paciente</label>
+
+              <select
+                style={input}
+                value={form.motivo_baja ?? ""}
+                onChange={(e) => {
+                  const motivo = e.target.value || null;
+
+                  const hoy = new Date().toISOString().split("T")[0];
+
+                  setForm((prev) => ({
+                    ...prev,
+                    motivo_baja: motivo,
+                    estado: motivo ? "baja" : "activo",
+                    fecha_baja: motivo ? hoy : null,
+                  }));
+                }}
+              >
+                <option value="">Activo</option>
+                <option value="fallecido">Fallecido</option>
+                <option value="no_vino_mas">No vino más</option>
+                <option value="reconstruido">Reconstruido</option>
+              </select>
+            </div>
+            {form.fecha_baja && (
+              <div style={field}>
+                <label style={label}>Fecha de baja</label>
+
+                <input
+                  style={input}
+                  type="date"
+                  value={form.fecha_baja}
+                  disabled
+                />
+              </div>
+            )}
           </div>
 
           {/* Fechas */}
