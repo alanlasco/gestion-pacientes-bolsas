@@ -5,7 +5,7 @@ import PatientForm from "../components/PatientForm";
 import ExportButton from "../components/ExportButton";
 
 const API_URL =
-  "https://c805e0e1-c8f7-4c62-b03a-3c8e0805a49f-00-azq9xy3uy68u.worf.replit.dev/pacientes";
+  "https://2f4b728b-dafb-4a23-994d-be37b9e37d59-00-2z7uz7ksfh2o3.janeway.replit.dev/";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
