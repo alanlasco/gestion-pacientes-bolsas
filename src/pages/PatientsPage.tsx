@@ -6,8 +6,8 @@ import ExportButton from "../components/ExportButton";
 import "../styles/patientsPage.css";
 
 const API_URL =
-  "https://c805e0e1-c8f7-4c62-b03a-3c8e0805a49f-00-azq9xy3uy68u.worf.replit.dev/pacientes";
-//   "https://3fa8cafc-8142-4fe8-ae56-510bf5854f76-00-nv3kzwlxbxiz.worf.replit.dev/pacientes";
+  //   "https://c805e0e1-c8f7-4c62-b03a-3c8e0805a49f-00-azq9xy3uy68u.worf.replit.dev/pacientes";
+  "https://3fa8cafc-8142-4fe8-ae56-510bf5854f76-00-nv3kzwlxbxiz.worf.replit.dev/pacientes";
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
