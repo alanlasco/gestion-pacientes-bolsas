@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/gestion-pacientes-bolsas/static/css/main.e6c13ad2.css",
-    "main.js": "/gestion-pacientes-bolsas/static/js/main.0e7c631a.js",
+    "main.css": "/gestion-pacientes-bolsas/static/css/main.664b69df.css",
+    "main.js": "/gestion-pacientes-bolsas/static/js/main.191b77e6.js",
     "index.html": "/gestion-pacientes-bolsas/index.html",
-    "main.e6c13ad2.css.map": "/gestion-pacientes-bolsas/static/css/main.e6c13ad2.css.map",
-    "main.0e7c631a.js.map": "/gestion-pacientes-bolsas/static/js/main.0e7c631a.js.map"
+    "main.664b69df.css.map": "/gestion-pacientes-bolsas/static/css/main.664b69df.css.map",
+    "main.191b77e6.js.map": "/gestion-pacientes-bolsas/static/js/main.191b77e6.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.0e7c631a.js"
+    "static/css/main.664b69df.css",
+    "static/js/main.191b77e6.js"
   ]
 }
